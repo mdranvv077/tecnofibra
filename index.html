@@ -99,17 +99,19 @@
     const cleanNumber=whatsappNumber.replace(/\D/g,'');
     if(/^\d{8,15}$/.test(cleanNumber)){
       const whatsappUrl='https://wa.me/'+cleanNumber;
-      [waChatLink,paymentChatLink].forEach(link=>{
+      [waChatLink,paymentChatLink].filter(Boolean).forEach(link=>{
         link.href=whatsappUrl;
         link.target='_blank';
         link.rel='noopener noreferrer';
         link.removeAttribute('aria-disabled');
       });
-      [waUnset,paymentUnset].forEach(label=>{label.hidden=true});
+      [waUnset,paymentUnset].filter(Boolean).forEach(label=>{label.hidden=true});
     }
-    paymentsOpen.addEventListener('click',()=>{closeWhatsApp();paymentsDialog.showModal()});
-    paymentsClose.addEventListener('click',()=>paymentsDialog.close());
-    paymentsDialog.addEventListener('click',event=>{if(event.target===paymentsDialog)paymentsDialog.close()});
+    if(paymentsOpen){
+      paymentsOpen.addEventListener('click',()=>{closeWhatsApp();paymentsDialog.showModal()});
+      paymentsClose.addEventListener('click',()=>paymentsDialog.close());
+      paymentsDialog.addEventListener('click',event=>{if(event.target===paymentsDialog)paymentsDialog.close()});
+    }
     function closeWhatsApp(){waWidget.classList.remove('open');waLauncher.setAttribute('aria-expanded','false');waLauncher.setAttribute('aria-label','Abrir chat de WhatsApp');waPanel.setAttribute('aria-hidden','true');waPanel.inert=true}
     waPanel.inert=true;
     waLauncher.addEventListener('click',()=>{if(waWidget.classList.contains('open')){closeWhatsApp()}else{waWidget.classList.add('open');waLauncher.setAttribute('aria-expanded','true');waLauncher.setAttribute('aria-label','Cerrar chat de WhatsApp');waPanel.setAttribute('aria-hidden','false');waPanel.inert=false}});
